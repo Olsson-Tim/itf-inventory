@@ -322,6 +322,136 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Bulk export devices as CSV
+app.get('/api/devices/export', (req, res) => {
+    const query = 'SELECT * FROM devices ORDER BY date_added DESC';
+    
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        
+        // Create CSV header
+        const headers = ['id', 'name', 'type', 'serial_number', 'manufacturer', 'model', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
+        let csv = headers.join(',') + '\n';
+        
+        // Add data rows
+        rows.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header] || '';
+                // Escape quotes and wrap in quotes if needed
+                if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+                    return `"${value.replace(/"/g, '""')}"`;
+                }
+                return value;
+            });
+            csv += values.join(',') + '\n';
+        });
+        
+        // Set headers for file download
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="devices.csv"');
+        res.send(csv);
+    });
+});
+
+// Bulk import devices from CSV
+app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) => {
+    try {
+        const csv = req.body.toString();
+        const lines = csv.split('\n').filter(line => line.trim() !== '');
+        
+        if (lines.length < 2) {
+            return res.status(400).json({ error: 'CSV file must contain headers and at least one data row' });
+        }
+        
+        // Parse headers
+        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        
+        // Required fields
+        const requiredFields = ['name', 'type', 'status'];
+        const missingFields = requiredFields.filter(field => !headers.includes(field));
+        
+        if (missingFields.length > 0) {
+            return res.status(400).json({ error: `Missing required fields in CSV: ${missingFields.join(', ')}` });
+        }
+        
+        // Parse data rows
+        const devices = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(v => {
+                // Handle quoted values
+                if (v.startsWith('"') && v.endsWith('"')) {
+                    return v.slice(1, -1).replace(/""/g, '"');
+                }
+                return v.trim();
+            });
+            
+            if (values.length !== headers.length) {
+                return res.status(400).json({ error: `Row ${i} has incorrect number of columns` });
+            }
+            
+            const device = {};
+            headers.forEach((header, index) => {
+                device[header] = values[index] || '';
+            });
+            
+            // Validate required fields
+            if (!device.name || !device.type || !device.status) {
+                return res.status(400).json({ error: `Row ${i} is missing required fields (name, type, status)` });
+            }
+            
+            devices.push(device);
+        }
+        
+        // Insert devices into database
+        const insertQuery = `
+            INSERT INTO devices (name, type, serial_number, manufacturer, model, status, location, assigned_to, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        
+        let insertedCount = 0;
+        let insertErrors = [];
+        
+        const insertDevice = (device, index) => {
+            return new Promise((resolve) => {
+                db.run(insertQuery, [
+                    device.name,
+                    device.type,
+                    device.serial_number || null,
+                    device.manufacturer || null,
+                    device.model || null,
+                    device.status,
+                    device.location || null,
+                    device.assigned_to || null,
+                    device.notes || null
+                ], (err) => {
+                    if (err) {
+                        console.error(`Error inserting device at row ${index + 1}:`, err.message);
+                        insertErrors.push({ row: index + 1, error: err.message });
+                    } else {
+                        insertedCount++;
+                    }
+                    resolve();
+                });
+            });
+        };
+        
+        // Process all devices
+        Promise.all(devices.map(insertDevice)).then(() => {
+            res.json({ 
+                message: `Successfully imported ${insertedCount} of ${devices.length} devices`, 
+                imported: insertedCount, 
+                total: devices.length,
+                errors: insertErrors
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ error: `Error parsing CSV: ${error.message}` });
+    }
+});
+
 // Serve frontend
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));

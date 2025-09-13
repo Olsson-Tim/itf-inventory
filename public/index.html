@@ -313,9 +313,184 @@
             margin-bottom: 15px;
             color: #495057;
         }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+        
+        .close-modal:hover {
+            color: #000;
+        }
+        
+        .modal-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+        
+        /* Dark Mode Styles */
+        .dark-mode {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+        }
+        
+        .dark-mode .container {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+        
+        .dark-mode .header {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+        }
+        
+        .dark-mode .form-section {
+            background: #4a5568;
+            border-color: #718096;
+        }
+        
+        .dark-mode .form-title {
+            color: #e2e8f0;
+        }
+        
+        .dark-mode label {
+            color: #e2e8f0;
+        }
+        
+        .dark-mode input, 
+        .dark-mode select, 
+        .dark-mode textarea {
+            background: #2d3748;
+            border-color: #718096;
+            color: #e2e8f0;
+        }
+        
+        .dark-mode input:focus, 
+        .dark-mode select:focus, 
+        .dark-mode textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dark-mode .device-card {
+            background: #4a5568;
+            border-color: #718096;
+        }
+        
+        .dark-mode .device-name {
+            color: #e2e8f0;
+        }
+        
+        .dark-mode .device-detail {
+            color: #cbd5e0;
+        }
+        
+        .dark-mode .detail-label {
+            color: #e2e8f0;
+        }
+        
+        .dark-mode .stat-card {
+            background: #4a5568;
+            border-color: #718096;
+        }
+        
+        .dark-mode .stat-label {
+            color: #cbd5e0;
+        }
+        
+        .dark-mode .status-available {
+            background: #48bb78;
+            color: #22543d;
+        }
+        
+        .dark-mode .status-in-use {
+            background: #ecc94b;
+            color: #744210;
+        }
+        
+        .dark-mode .status-maintenance {
+            background: #fc8181;
+            color: #742a2a;
+        }
+        
+        .dark-mode .modal-content {
+            background: #4a5568;
+            color: #e2e8f0;
+        }
+        
+        .dark-mode .close-modal {
+            color: #a0aec0;
+        }
+        
+        .dark-mode .close-modal:hover {
+            color: #e2e8f0;
+        }
+        
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .dark-mode .dark-mode-toggle {
+            background: rgba(108, 108, 108, 0.3);
+        }
+        
+        .dark-mode .dark-mode-toggle:hover {
+            background: rgba(108, 108, 108, 0.5);
+        }
     </style>
 </head>
 <body>
+    <button class="dark-mode-toggle" id="dark-mode-toggle">🌙</button>
     <div class="container">
         <div class="header">
             <h1>📱 Device Inventory System</h1>
@@ -400,8 +575,13 @@
                         <label for="notes">Notes</label>
                         <textarea id="notes" placeholder="Additional notes about the device..."></textarea>
                     </div>
-                    <button type="submit" class="btn">Add Device</button>
+                    <div class="form-group">
+                        <button type="submit" class="btn">Add Device</button>
+                        <button type="button" id="import-btn" class="btn" style="margin-left: 10px;">📥 Import Devices</button>
+                        <button type="button" id="export-btn" class="btn" style="margin-left: 10px;">📤 Export Devices</button>
+                    </div>
                 </form>
+                <input type="file" id="csv-file" accept=".csv" style="display: none;">
             </div>
 
             <!-- Search -->
@@ -427,17 +607,53 @@
             constructor() {
                 this.devices = [];
                 this.searchTimeout = null;
+                this.currentDevice = null;
                 this.initEventListeners();
                 this.loadDevices();
                 this.loadStats();
+                this.initDarkMode();
             }
 
             initEventListeners() {
                 const form = document.getElementById('device-form');
                 const searchInput = document.getElementById('search-input');
+                const importBtn = document.getElementById('import-btn');
+                const exportBtn = document.getElementById('export-btn');
+                const csvFile = document.getElementById('csv-file');
+                const editModal = document.getElementById('edit-modal');
+                const closeModal = document.getElementById('close-modal');
+                const editForm = document.getElementById('edit-device-form');
+                const darkModeToggle = document.getElementById('dark-mode-toggle');
 
                 form.addEventListener('submit', (e) => this.handleSubmit(e));
                 searchInput.addEventListener('input', (e) => this.handleSearch(e));
+                importBtn.addEventListener('click', () => csvFile.click());
+                exportBtn.addEventListener('click', () => this.exportDevices());
+                csvFile.addEventListener('change', (e) => this.importDevices(e));
+                editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
+                closeModal.addEventListener('click', () => this.closeEditModal());
+                darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+
+                // Close modal when clicking outside
+                window.addEventListener('click', (e) => {
+                    if (e.target === editModal) {
+                        this.closeEditModal();
+                    }
+                });
+            }
+
+            initDarkMode() {
+                const isDarkMode = localStorage.getItem('darkMode') === 'true';
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('dark-mode-toggle').textContent = '☀️';
+                }
+            }
+
+            toggleDarkMode() {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', isDarkMode);
+                document.getElementById('dark-mode-toggle').textContent = isDarkMode ? '☀️' : '🌙';
             }
 
             async handleSubmit(e) {
@@ -488,25 +704,112 @@
                 }, 300);
             }
 
-            async deleteDevice(id) {
-                if (confirm('Are you sure you want to delete this device?')) {
+            async handleEditSubmit(e) {
+                e.preventDefault();
+                
+                const device = {
+                    id: document.getElementById('edit-device-id').value,
+                    name: document.getElementById('edit-device-name').value,
+                    type: document.getElementById('edit-device-type').value,
+                    serial_number: document.getElementById('edit-serial-number').value,
+                    manufacturer: document.getElementById('edit-manufacturer').value,
+                    model: document.getElementById('edit-model').value,
+                    status: document.getElementById('edit-status').value,
+                    location: document.getElementById('edit-location').value,
+                    assigned_to: document.getElementById('edit-assigned-to').value,
+                    notes: document.getElementById('edit-notes').value
+                };
+
+                try {
+                    const response = await fetch(`/api/devices/${device.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(device)
+                    });
+
+                    if (response.ok) {
+                        this.closeEditModal();
+                        this.loadDevices();
+                        this.loadStats();
+                        this.showNotification('Device updated successfully!', 'success');
+                    } else {
+                        const error = await response.json();
+                        this.showNotification(`Error: ${error.error}`, 'error');
+                    }
+                } catch (error) {
+                    this.showNotification(`Error: ${error.message}`, 'error');
+                }
+            }
+
+            openEditModal(device) {
+                this.currentDevice = device;
+                
+                // Fill the form with device data
+                document.getElementById('edit-device-id').value = device.id;
+                document.getElementById('edit-device-name').value = device.name;
+                document.getElementById('edit-device-type').value = device.type;
+                document.getElementById('edit-serial-number').value = device.serial_number || '';
+                document.getElementById('edit-manufacturer').value = device.manufacturer || '';
+                document.getElementById('edit-model').value = device.model || '';
+                document.getElementById('edit-status').value = device.status;
+                document.getElementById('edit-location').value = device.location || '';
+                document.getElementById('edit-assigned-to').value = device.assigned_to || '';
+                document.getElementById('edit-notes').value = device.notes || '';
+                
+                // Show the modal
+                document.getElementById('edit-modal').style.display = 'block';
+            }
+
+            closeEditModal() {
+                document.getElementById('edit-modal').style.display = 'none';
+                this.currentDevice = null;
+            }
+
+            exportDevices() {
+                window.location.href = '/api/devices/export';
+            }
+
+            async importDevices(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+                    this.showNotification('Please select a CSV file', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = async (event) => {
                     try {
-                        const response = await fetch(`/api/devices/${id}`, {
-                            method: 'DELETE'
+                        const content = event.target.result;
+                        
+                        const response = await fetch('/api/devices/import', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'text/csv'
+                            },
+                            body: content
                         });
 
                         if (response.ok) {
+                            const result = await response.json();
                             this.loadDevices();
                             this.loadStats();
-                            this.showNotification('Device deleted successfully!', 'success');
+                            this.showNotification(result.message, 'success');
                         } else {
                             const error = await response.json();
-                            this.showNotification(`Error: ${error.error}`, 'error');
+                            this.showNotification(`Import failed: ${error.error}`, 'error');
                         }
                     } catch (error) {
-                        this.showNotification(`Error: ${error.message}`, 'error');
+                        this.showNotification(`Error importing devices: ${error.message}`, 'error');
                     }
-                }
+                };
+
+                reader.readAsText(file);
+                // Reset file input
+                e.target.value = '';
             }
 
             async loadDevices(searchQuery = '') {
@@ -574,6 +877,7 @@
                             <div class="device-detail"><span class="detail-label">Added:</span> ${new Date(device.date_added).toLocaleDateString()}</div>
                             ${device.notes ? `<div class="device-detail"><span class="detail-label">Notes:</span> ${this.escapeHtml(device.notes)}</div>` : ''}
                         </div>
+                        <button class="btn" onclick="inventory.openEditModal(${JSON.stringify(device).replace(/"/g, '&quot;')})" style="margin-right: 10px; background: #667eea;">Edit Device</button>
                         <button class="delete-btn" onclick="inventory.deleteDevice(${device.id})">Delete Device</button>
                     </div>
                 `).join('');
@@ -639,5 +943,71 @@
         // Initialize the inventory system
         const inventory = new InventorySystem();
     </script>
-</body>
+    
+    <!-- Edit Device Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 class="modal-title">✏️ Edit Device</h2>
+            <form id="edit-device-form">
+                <input type="hidden" id="edit-device-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-device-name">Device Name *</label>
+                        <input type="text" id="edit-device-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-device-type">Device Type *</label>
+                        <select id="edit-device-type" required>
+                            <option value="">Select Type</option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="Desktop">Desktop</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Phone">Phone</option>
+                            <option value="Monitor">Monitor</option>
+                            <option value="Printer">Printer</option>
+                            <option value="Router">Router</option>
+                            <option value="Server">Server</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-serial-number">Serial Number</label>
+                        <input type="text" id="edit-serial-number">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-manufacturer">Manufacturer</label>
+                        <input type="text" id="edit-manufacturer">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-model">Model</label>
+                        <input type="text" id="edit-model">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-status">Status *</label>
+                        <select id="edit-status" required>
+                            <option value="Available">Available</option>
+                            <option value="In Use">In Use</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-location">Location</label>
+                        <input type="text" id="edit-location" placeholder="e.g., Office 201, Storage Room">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-assigned-to">Assigned To</label>
+                        <input type="text" id="edit-assigned-to" placeholder="Employee name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-notes">Notes</label>
+                    <textarea id="edit-notes" placeholder="Additional notes about the device..."></textarea>
+                </div>
+                <button type="submit" class="btn">Update Device</button>
+            </form>
+        </div>
+    </div>
+
+    </body>
 </html>
