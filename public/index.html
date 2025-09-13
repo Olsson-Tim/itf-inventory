@@ -609,8 +609,11 @@
                 this.searchTimeout = null;
                 this.currentDevice = null;
                 this.initEventListeners();
-                this.loadDevices();
-                this.loadStats();
+                // Add a small delay to ensure DOM is fully loaded
+                setTimeout(() => {
+                    this.loadDevices();
+                    this.loadStats();
+                }, 100);
                 this.initDarkMode();
             }
 
@@ -632,7 +635,10 @@
                 csvFile.addEventListener('change', (e) => this.importDevices(e));
                 editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
                 closeModal.addEventListener('click', () => this.closeEditModal());
-                darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+                
+                if (darkModeToggle) {
+                    darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+                }
 
                 // Close modal when clicking outside
                 window.addEventListener('click', (e) => {
@@ -643,7 +649,9 @@
             }
 
             initDarkMode() {
+                console.log('Initializing dark mode');
                 const isDarkMode = localStorage.getItem('darkMode') === 'true';
+                console.log('Dark mode setting from localStorage:', isDarkMode);
                 if (isDarkMode) {
                     document.body.classList.add('dark-mode');
                     document.getElementById('dark-mode-toggle').textContent = '☀️';
@@ -651,9 +659,11 @@
             }
 
             toggleDarkMode() {
+                console.log('Toggling dark mode');
                 const isDarkMode = document.body.classList.toggle('dark-mode');
                 localStorage.setItem('darkMode', isDarkMode);
                 document.getElementById('dark-mode-toggle').textContent = isDarkMode ? '☀️' : '🌙';
+                console.log('Dark mode is now:', isDarkMode);
             }
 
             async handleSubmit(e) {
@@ -743,6 +753,13 @@
                 }
             }
 
+            openEditModalById(deviceId) {
+                const device = this.devices.find(d => d.id === deviceId);
+                if (device) {
+                    this.openEditModal(device);
+                }
+            }
+
             openEditModal(device) {
                 this.currentDevice = device;
                 
@@ -819,15 +836,20 @@
                         url += `?search=${encodeURIComponent(searchQuery)}`;
                     }
 
+                    console.log('Fetching devices from:', url);
                     const response = await fetch(url);
+                    console.log('Response status:', response.status);
                     if (response.ok) {
                         this.devices = await response.json();
+                        console.log('Received devices:', this.devices);
                         this.render();
                     } else {
                         const error = await response.json();
+                        console.error('Error loading devices:', error);
                         this.showNotification(`Error loading devices: ${error.error}`, 'error');
                     }
                 } catch (error) {
+                    console.error('Error loading devices:', error);
                     this.showNotification(`Error loading devices: ${error.message}`, 'error');
                     this.devices = [];
                     this.render();
@@ -847,6 +869,7 @@
             }
 
             render() {
+                console.log('Rendering devices:', this.devices);
                 const inventoryList = document.getElementById('inventory-list');
                 
                 if (this.devices.length === 0) {
@@ -877,7 +900,7 @@
                             <div class="device-detail"><span class="detail-label">Added:</span> ${new Date(device.date_added).toLocaleDateString()}</div>
                             ${device.notes ? `<div class="device-detail"><span class="detail-label">Notes:</span> ${this.escapeHtml(device.notes)}</div>` : ''}
                         </div>
-                        <button class="btn" onclick="inventory.openEditModal(${JSON.stringify(device).replace(/"/g, '&quot;')})" style="margin-right: 10px; background: #667eea;">Edit Device</button>
+                        <button class="btn" onclick="inventory.openEditModalById(${device.id})" style="margin-right: 10px; background: #667eea;">Edit Device</button>
                         <button class="delete-btn" onclick="inventory.deleteDevice(${device.id})">Delete Device</button>
                     </div>
                 `).join('');
