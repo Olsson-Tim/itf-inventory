@@ -605,12 +605,14 @@
     <script>
         class InventorySystem {
             constructor() {
+                console.log('Initializing InventorySystem');
                 this.devices = [];
                 this.searchTimeout = null;
                 this.currentDevice = null;
                 this.initEventListeners();
                 // Add a small delay to ensure DOM is fully loaded
                 setTimeout(() => {
+                    console.log('Loading devices after delay');
                     this.loadDevices();
                     this.loadStats();
                 }, 100);
@@ -618,6 +620,7 @@
             }
 
             initEventListeners() {
+                console.log('Initializing event listeners');
                 const form = document.getElementById('device-form');
                 const searchInput = document.getElementById('search-input');
                 const importBtn = document.getElementById('import-btn');
@@ -627,6 +630,8 @@
                 const closeModal = document.getElementById('close-modal');
                 const editForm = document.getElementById('edit-device-form');
                 const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+                console.log('DOM elements:', { form, searchInput, importBtn, exportBtn, csvFile, editModal, closeModal, editForm, darkModeToggle });
 
                 form.addEventListener('submit', (e) => this.handleSubmit(e));
                 searchInput.addEventListener('input', (e) => this.handleSearch(e));
@@ -638,6 +643,9 @@
                 
                 if (darkModeToggle) {
                     darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+                    console.log('Dark mode toggle event listener added');
+                } else {
+                    console.log('Dark mode toggle not found');
                 }
 
                 // Close modal when clicking outside
@@ -858,9 +866,12 @@
 
             async loadStats() {
                 try {
+                    console.log('Loading stats');
                     const response = await fetch('/api/stats');
+                    console.log('Stats response status:', response.status);
                     if (response.ok) {
                         const stats = await response.json();
+                        console.log('Received stats:', stats);
                         this.updateStats(stats);
                     }
                 } catch (error) {
@@ -907,6 +918,7 @@
             }
 
             updateStats(stats) {
+                console.log('Updating stats:', stats);
                 document.getElementById('total-devices').textContent = stats.total || 0;
                 document.getElementById('available-devices').textContent = stats.available || 0;
                 document.getElementById('inuse-devices').textContent = stats.in_use || 0;
@@ -1032,5 +1044,12 @@
         </div>
     </div>
 
-    </body>
+    <!-- Initialize the inventory system -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM content loaded, initializing inventory system');
+            const inventory = new InventorySystem();
+        });
+    </script>
+</body>
 </html>
