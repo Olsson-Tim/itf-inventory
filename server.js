@@ -62,75 +62,8 @@ function initializeDatabase() {
 
 // Insert sample data if table is empty
 function insertSampleData() {
-    db.get("SELECT COUNT(*) as count FROM devices", (err, row) => {
-        if (err) {
-            console.error('Error checking data:', err.message);
-            return;
-        }
-        
-        if (row.count === 0) {
-            const sampleDevices = [
-                {
-                    name: 'MacBook Pro 16"',
-                    type: 'Laptop',
-                    serial_number: 'MBP2023001',
-                    manufacturer: 'Apple',
-                    model: 'MacBook Pro',
-                    status: 'In Use',
-                    location: 'Office 201',
-                    assigned_to: 'John Doe',
-                    notes: 'Primary work laptop'
-                },
-                {
-                    name: 'Dell Monitor 27"',
-                    type: 'Monitor',
-                    serial_number: 'DM27001',
-                    manufacturer: 'Dell',
-                    model: 'UltraSharp 27',
-                    status: 'Available',
-                    location: 'Storage Room',
-                    assigned_to: '',
-                    notes: 'Secondary monitor for developers'
-                },
-                {
-                    name: 'HP Printer LaserJet',
-                    type: 'Printer',
-                    serial_number: 'HP2023LJ001',
-                    manufacturer: 'HP',
-                    model: 'LaserJet Pro',
-                    status: 'Maintenance',
-                    location: 'Office Floor 1',
-                    assigned_to: '',
-                    notes: 'Needs toner replacement'
-                }
-            ];
-            
-            const insertQuery = `
-                INSERT INTO devices (name, type, serial_number, manufacturer, model, status, location, assigned_to, notes)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
-            
-            sampleDevices.forEach(device => {
-                db.run(insertQuery, [
-                    device.name,
-                    device.type,
-                    device.serial_number,
-                    device.manufacturer,
-                    device.model,
-                    device.status,
-                    device.location,
-                    device.assigned_to,
-                    device.notes
-                ], (err) => {
-                    if (err) {
-                        console.error('Error inserting sample data:', err.message);
-                    }
-                });
-            });
-            
-            console.log('Sample data inserted.');
-        }
-    });
+    // No sample data inserted by default
+    console.log('Database initialized without sample data.');
 }
 
 // API Routes

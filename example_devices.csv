@@ -1,9 +1,8 @@
 name,type,serial_number,manufacturer,model,status,location,assigned_to,notes
-"MacBook Pro 16""",Laptop,MBP2023001,Apple,MacBook Pro,In Use,Office 201,John Doe,Primary work laptop
-"Dell Monitor 27""",Monitor,DM27001,Dell,UltraSharp 27,Available,Storage Room,,Secondary monitor for developers
-HP Printer LaserJet,Printer,HP2023LJ001,HP,LaserJet Pro,Maintenance,Office Floor 1,,Needs toner replacement
+"MacBook Pro 16""",Computer,MBP2023001,Apple,MacBook Pro,In Use,Office 201,John Doe,Primary work laptop
+"Dell Monitor 27""",Computer,DM27001,Dell,UltraSharp 27,Available,Storage Room,,Secondary monitor for developers
 iPhone 14 Pro,Phone,IP2023001,Apple,iPhone 14 Pro,In Use,Conference Room,Jane Smith,Company phone
-Lenovo ThinkPad X1,Desktop,LT2023001,Lenovo,ThinkPad X1,Available,IT Dept,,Backup laptop
-Cisco Router,Router,CR2023001,Cisco,ISR 4321,In Use,Server Room,IT Team,Main network router
-Samsung Tablet,Tablet,ST2023001,Samsung,Galaxy Tab S8,Available,Storage Room,,Loaner device
-Dell Server,Server,DS2023001,Dell,PowerEdge R750,In Use,Data Center,IT Team,Database server
+iPad Pro,Tablet,IP2023002,Apple,iPad Pro,Available,Storage Room,,Loaner device
+Lenovo ThinkPad X1,Computer,LT2023001,Lenovo,ThinkPad X1,In Use,IT Dept,IT Staff,Backup laptop
+Samsung Galaxy Tab,Tablet,SG2023001,Samsung,Galaxy Tab S8,Maintenance,IT Dept,,Screen replacement needed
+Google Pixel 8,Phone,GP2023001,Google,Pixel 8,Available,Storage Room,,New purchase

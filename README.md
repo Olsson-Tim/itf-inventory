@@ -1,157 +1,157 @@
-# Device Inventory System
+# Enhetsinventarie System
 
-A simple and efficient device inventory management system built with Node.js, Express, and SQLite. This system allows you to track and manage your organization's devices with an intuitive web interface.
+Ett enkelt och effektivt system för hantering av enhetsinventarier byggt med Node.js, Express och SQLite. Detta system gör det möjligt att spåra och hantera din organisations enheter med ett intuitivt webbgränssnitt.
 
-## Features
+## Funktioner
 
-- **Device Management**: Add, edit, view, and delete devices
-- **Bulk Import/Export**: Import devices from CSV files and export the entire inventory
-- **Search Functionality**: Quickly find devices by name, type, serial number, or other attributes
-- **Device Status Tracking**: Track device availability with statuses (Available, In Use, Maintenance)
-- **Responsive Design**: Works on desktop and mobile devices
-- **Dark Mode**: Eye-friendly dark theme option
-- **Docker Support**: Easy deployment with Docker and Docker Compose
+- **Enhets hantering**: Lägg till, redigera, visa och ta bort enheter
+- **Massimport/Export**: Importera enheter från CSV-filer och exportera hela inventariet
+- **Sökfunktion**: Hitta snabbt enheter efter namn, typ, serienummer eller andra attribut
+- **Enhetsstatus spårning**: Spåra enhetens tillgänglighet med statusar (Tillgänglig, Används, Underhåll)
+- **Responsiv design**: Fungerar på stationära och mobila enheter
+- **Mörkt läge**: Ögonvänligt mörkt tema
+- **Docker support**: Enkel distribution med Docker och Docker Compose
 
-## Getting Started
+## Kom igång
 
-### Prerequisites
+### Förutsättningar
 
-- Node.js (version 16 or higher)
-- npm (comes with Node.js)
+- Node.js (version 16 eller högre)
+- npm (följer med Node.js)
 
 ### Installation
 
-1. Clone the repository:
+1. Klona repositoryt:
    ```bash
    git clone <repository-url>
    cd inventory-system
    ```
 
-2. Install dependencies:
+2. Installera beroenden:
    ```bash
    npm install
    ```
 
-3. Start the application:
+3. Starta applikationen:
    ```bash
    npm start
    ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+4. Öppna webbläsaren och navigera till `http://localhost:3000`
 
-### Using Docker
+### Använda Docker
 
-1. Build and run with Docker Compose:
+1. Bygg och kör med Docker Compose:
    ```bash
    docker-compose up -d
    ```
 
-2. Access the application at `http://localhost:3000`
+2. Kom åt applikationen på `http://localhost:3000`
 
-## Usage
+## Användning
 
-### Adding Devices
+### Lägga till enheter
 
-1. Fill in the device information in the "Add New Device" form
-2. Click "Add Device" to save the device to the inventory
+1. Fyll i enhetsinformationen i formuläret "Lägg till ny enhet"
+2. Klicka på "Lägg till enhet" för att spara enheten i inventariet
 
-### Editing Devices
+### Redigera enheter
 
-1. Click the "Edit Device" button on any device card
-2. Modify the device information in the modal
-3. Click "Update Device" to save changes
+1. Klicka på knappen "Redigera enhet" på valfritt enhetskort
+2. Ändra enhetsinformationen i modalen
+3. Klicka på "Uppdatera enhet" för att spara ändringarna
 
-### Deleting Devices
+### Ta bort enheter
 
-1. Click the "Delete Device" button on any device card
-2. Confirm the deletion in the dialog
+1. Klicka på knappen "Ta bort enhet" på valfritt enhetskort
+2. Bekräfta borttagningen i dialogrutan
 
-### Bulk Import
+### Massimport
 
-1. Click the "Import Devices" button
-2. Select a CSV file with device information
-3. The system will import all valid devices from the file
+1. Klicka på knappen "Importera enheter"
+2. Välj en CSV-fil med enhetsinformation
+3. Systemet kommer att importera alla giltiga enheter från filen
 
-### Bulk Export
+### Massexport
 
-1. Click the "Export Devices" button
-2. The system will download a CSV file with all devices
+1. Klicka på knappen "Exportera enheter"
+2. Systemet kommer att ladda ner en CSV-fil med alla enheter
 
-### Searching
+### Sökning
 
-1. Type in the search box to filter devices by any attribute
-2. The list will update automatically as you type
+1. Skriv i sökrutan för att filtrera enheter efter attribut
+2. Listan uppdateras automatiskt när du skriver
 
-### Dark Mode
+### Mörkt läge
 
-1. Click the moon/sun icon in the top right corner
-2. Toggle between light and dark themes
+1. Klicka på måne/sol-ikonen uppe i högra hörnet
+2. Växla mellan ljust och mörkt tema
 
-## CSV Format
+## CSV-format
 
-When importing devices, use the following CSV format:
+När du importerar enheter, använd följande CSV-format:
 
 ```csv
 name,type,serial_number,manufacturer,model,status,location,assigned_to,notes
-"Device Name",Laptop,SN123456,Manufacturer,Model Name,Available,Location,Assigned Person,Additional notes
+"Enhetsnamn",Computer,SN123456,Tillverkare,Modellnamn,Available,Plats,Tilldelad Person,Ytterligare anteckningar
 ```
 
-Required fields:
+Obligatoriska fält:
 - `name`
 - `type` 
 - `status`
 
-See `example_devices.csv` for a complete example.
+Se `example_devices.csv` för ett komplett exempel.
 
-## API Endpoints
+## API-slutpunkter
 
-- `GET /api/devices` - Get all devices
-- `GET /api/devices/:id` - Get a specific device
-- `POST /api/devices` - Create a new device
-- `PUT /api/devices/:id` - Update a device
-- `DELETE /api/devices/:id` - Delete a device
-- `GET /api/devices/export` - Export devices as CSV
-- `POST /api/devices/import` - Import devices from CSV
-- `GET /api/stats` - Get inventory statistics
-- `GET /api/health` - Health check endpoint
+- `GET /api/devices` - Hämta alla enheter
+- `GET /api/devices/:id` - Hämta en specifik enhet
+- `POST /api/devices` - Skapa en ny enhet
+- `PUT /api/devices/:id` - Uppdatera en enhet
+- `DELETE /api/devices/:id` - Ta bort en enhet
+- `GET /api/devices/export` - Exportera enheter som CSV
+- `POST /api/devices/import` - Importera enheter från CSV
+- `GET /api/stats` - Hämta inventariestatistik
+- `GET /api/health` - Hälsokontroll
 
-## Development
+## Utveckling
 
-### Running in Development Mode
+### Köra i utvecklingsläge
 
 ```bash
 npm run dev
 ```
 
-This will start the server with nodemon for automatic restarts on code changes.
+Detta startar servern med nodemon för automatiska omstarter vid kodändringar.
 
-### Project Structure
+### Projektsstruktur
 
 ```
 inventory-system/
-├── server.js          # Main server file
-├── package.json       # Project dependencies
-├── Dockerfile         # Docker configuration
-├── docker-compose.yml # Docker Compose configuration
-├── .dockerignore      # Docker ignore patterns
-├── example_devices.csv # Example CSV for import
-├── public/            # Frontend files
-│   └── index.html     # Main HTML file
-└── data/              # SQLite database (created automatically)
+├── server.js          # Huvudserverfil
+├── package.json       # Projektsberoenden
+├── Dockerfile         # Docker-konfiguration
+├── docker-compose.yml # Docker Compose-konfiguration
+├── .dockerignore      # Docker ignoreringsmönster
+├── example_devices.csv # Exempel CSV för import
+├── public/            # Frontend-filer
+│   └── index.html     # Huvud HTML-fil
+└── data/              # SQLite-databas (skapas automatiskt)
 ```
 
-## Contributing
+## Bidra
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a pull request
+1. Forka repositoryt
+2. Skapa en feature branch
+3. Commita dina ändringar
+4. Pusha till branchen
+5. Skapa en pull request
 
-## License
+## Licens
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Detta projekt är licensierat under MIT License - se LICENSE-filen för detaljer.
 
 ## Support
 
-For support, please open an issue on the GitHub repository.
+För support, vänligen öppna ett issue på GitHub-repositoryt.

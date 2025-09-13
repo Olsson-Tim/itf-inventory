@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Device Inventory System</title>
+    <title>Enhetsinventarie System</title>
     <style>
         * {
             margin: 0;
@@ -524,8 +524,8 @@
     <button class="dark-mode-toggle" id="dark-mode-toggle">🌙</button>
     <div class="container">
         <div class="header">
-            <h1>📱 Device Inventory System</h1>
-            <p>Track and manage your device inventory with ease</p>
+            <h1>📱 Enhetsinventarie System</h1>
+            <p>Spåra och hantera dina enheter med enkelhet</p>
         </div>
         
         <div class="content">
@@ -533,84 +533,78 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="total-devices">0</div>
-                    <div class="stat-label">Total Devices</div>
+                    <div class="stat-label">Totalt Enheter</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="available-devices">0</div>
-                    <div class="stat-label">Available</div>
+                    <div class="stat-label">Tillgängliga</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="inuse-devices">0</div>
-                    <div class="stat-label">In Use</div>
+                    <div class="stat-label">Används</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="maintenance-devices">0</div>
-                    <div class="stat-label">Maintenance</div>
+                    <div class="stat-label">Underhåll</div>
                 </div>
             </div>
 
             <!-- Add Device Form -->
             <div class="form-section">
-                <h2 class="form-title">➕ Add New Device</h2>
+                <h2 class="form-title">➕ Lägg till ny enhet</h2>
                 <form id="device-form">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="device-name">Device Name *</label>
+                            <label for="device-name">Enhetsnamn *</label>
                             <input type="text" id="device-name" required>
                         </div>
                         <div class="form-group">
-                            <label for="device-type">Device Type *</label>
+                            <label for="device-type">Enhetstyp *</label>
                             <select id="device-type" required>
-                                <option value="">Select Type</option>
-                                <option value="Laptop">Laptop</option>
-                                <option value="Desktop">Desktop</option>
-                                <option value="Tablet">Tablet</option>
-                                <option value="Phone">Phone</option>
-                                <option value="Monitor">Monitor</option>
-                                <option value="Printer">Printer</option>
-                                <option value="Router">Router</option>
-                                <option value="Server">Server</option>
-                                <option value="Other">Other</option>
+                                <option value="">Välj typ</option>
+                                <option value="Computer">Dator</option>
+                                <option value="Tablet">Surfplatta</option>
+                                <option value="Phone">Mobiltelefon</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="serial-number">Serial Number</label>
+                            <label for="serial-number">Serienummer</label>
                             <input type="text" id="serial-number">
                         </div>
                         <div class="form-group">
-                            <label for="manufacturer">Manufacturer</label>
+                            <label for="manufacturer">Tillverkare</label>
                             <input type="text" id="manufacturer">
                         </div>
                         <div class="form-group">
-                            <label for="model">Model</label>
+                            <label for="model">Modell</label>
                             <input type="text" id="model">
                         </div>
                         <div class="form-group">
                             <label for="status">Status *</label>
                             <select id="status" required>
-                                <option value="Available">Available</option>
-                                <option value="In Use">In Use</option>
-                                <option value="Maintenance">Maintenance</option>
+                                <option value="Available">Tillgänglig</option>
+                                <option value="In Use">Används</option>
+                                <option value="Maintenance">Underhåll</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="location">Location</label>
-                            <input type="text" id="location" placeholder="e.g., Office 201, Storage Room">
+                            <label for="location">Plats</label>
+                            <input type="text" id="location" placeholder="t.ex. Kontor 201, Lager">
                         </div>
                         <div class="form-group">
-                            <label for="assigned-to">Assigned To</label>
-                            <input type="text" id="assigned-to" placeholder="Employee name">
+                            <label for="assigned-to">Tilldelad till</label>
+                            <input type="text" id="assigned-to" placeholder="Anställd namn">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="notes">Notes</label>
-                        <textarea id="notes" placeholder="Additional notes about the device..."></textarea>
+                        <label for="notes">Anteckningar</label>
+                        <textarea id="notes" placeholder="Ytterligare anteckningar om enheten..."></textarea>
                     </div>
                     <div class="form-group">
                         <div class="form-buttons">
-                            <button type="submit" class="btn">Add Device</button>
-                            <button type="button" id="import-btn" class="btn" style="margin-left: 10px;">📥 Import Devices</button>
-                            <button type="button" id="export-btn" class="btn" style="margin-left: 10px;">📤 Export Devices</button>
+                            <button type="submit" class="btn">Lägg till enhet</button>
+                            <button type="button" id="import-btn" class="btn" style="margin-left: 10px;">📥 Importera enheter</button>
+                            <button type="button" id="export-btn" class="btn" style="margin-left: 10px;">📤 Exportera enheter</button>
                         </div>
                     </div>
                 </form>
@@ -619,16 +613,16 @@
 
             <!-- Search -->
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="🔍 Search devices by name, type, serial number...">
+                <input type="text" id="search-input" placeholder="🔍 Sök enheter efter namn, typ, serienummer...">
             </div>
 
             <!-- Inventory Display -->
             <div class="form-section">
-                <h2 class="form-title">📋 Current Inventory</h2>
+                <h2 class="form-title">📋 Aktuellt inventarie</h2>
                 <div id="inventory-list" class="inventory-grid">
                     <div class="empty-state">
-                        <h3>No devices in inventory</h3>
-                        <p>Add your first device using the form above.</p>
+                        <h3>Inga enheter i inventariet</h3>
+                        <p>Lägg till din första enhet med formuläret ovan.</p>
                     </div>
                 </div>
             </div>
@@ -996,63 +990,57 @@
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="close-modal">&times;</span>
-            <h2 class="modal-title">✏️ Edit Device</h2>
+            <h2 class="modal-title">✏️ Redigera enhet</h2>
             <form id="edit-device-form">
                 <input type="hidden" id="edit-device-id">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="edit-device-name">Device Name *</label>
+                        <label for="edit-device-name">Enhetsnamn *</label>
                         <input type="text" id="edit-device-name" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-device-type">Device Type *</label>
+                        <label for="edit-device-type">Enhetstyp *</label>
                         <select id="edit-device-type" required>
-                            <option value="">Select Type</option>
-                            <option value="Laptop">Laptop</option>
-                            <option value="Desktop">Desktop</option>
-                            <option value="Tablet">Tablet</option>
-                            <option value="Phone">Phone</option>
-                            <option value="Monitor">Monitor</option>
-                            <option value="Printer">Printer</option>
-                            <option value="Router">Router</option>
-                            <option value="Server">Server</option>
-                            <option value="Other">Other</option>
+                            <option value="">Välj typ</option>
+                            <option value="Computer">Dator</option>
+                            <option value="Tablet">Surfplatta</option>
+                            <option value="Phone">Mobiltelefon</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit-serial-number">Serial Number</label>
+                        <label for="edit-serial-number">Serienummer</label>
                         <input type="text" id="edit-serial-number">
                     </div>
                     <div class="form-group">
-                        <label for="edit-manufacturer">Manufacturer</label>
+                        <label for="edit-manufacturer">Tillverkare</label>
                         <input type="text" id="edit-manufacturer">
                     </div>
                     <div class="form-group">
-                        <label for="edit-model">Model</label>
+                        <label for="edit-model">Modell</label>
                         <input type="text" id="edit-model">
                     </div>
                     <div class="form-group">
                         <label for="edit-status">Status *</label>
                         <select id="edit-status" required>
-                            <option value="Available">Available</option>
-                            <option value="In Use">In Use</option>
-                            <option value="Maintenance">Maintenance</option>
+                            <option value="Available">Tillgänglig</option>
+                            <option value="In Use">Används</option>
+                            <option value="Maintenance">Underhåll</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit-location">Location</label>
-                        <input type="text" id="edit-location" placeholder="e.g., Office 201, Storage Room">
+                        <label for="edit-location">Plats</label>
+                        <input type="text" id="edit-location" placeholder="t.ex. Kontor 201, Lager">
                     </div>
                     <div class="form-group">
-                        <label for="edit-assigned-to">Assigned To</label>
-                        <input type="text" id="edit-assigned-to" placeholder="Employee name">
+                        <label for="edit-assigned-to">Tilldelad till</label>
+                        <input type="text" id="edit-assigned-to" placeholder="Anställd namn">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="edit-notes">Notes</label>
-                    <textarea id="edit-notes" placeholder="Additional notes about the device..."></textarea>
+                    <label for="edit-notes">Anteckningar</label>
+                    <textarea id="edit-notes" placeholder="Ytterligare anteckningar om enheten..."></textarea>
                 </div>
-                <button type="submit" class="btn">Update Device</button>
+                <button type="submit" class="btn">Uppdatera enhet</button>
             </form>
         </div>
     </div>
