@@ -780,14 +780,9 @@
             }
 
             openEditModalById(deviceId) {
-                console.log('openEditModalById called with deviceId:', deviceId);
-                console.log('Current devices array:', this.devices);
                 const device = this.devices.find(d => d.id === deviceId);
-                console.log('Found device:', device);
                 if (device) {
                     this.openEditModal(device);
-                } else {
-                    console.log('Device not found for ID:', deviceId);
                 }
             }
 
@@ -861,13 +856,11 @@
             }
 
             async deleteDevice(id) {
-                console.log('deleteDevice called with id:', id);
                 if (confirm('Är du säker på att du vill ta bort denna enhet?')) {
                     try {
                         const response = await fetch(`/api/devices/${id}`, {
                             method: 'DELETE'
                         });
-                        console.log('Delete response:', response);
 
                         if (response.ok) {
                             this.loadDevices();
@@ -875,11 +868,9 @@
                             this.showNotification('Enheten har tagits bort!', 'success');
                         } else {
                             const error = await response.json();
-                            console.log('Delete error:', error);
                             this.showNotification(`Fel: ${error.error}`, 'error');
                         }
                     } catch (error) {
-                        console.log('Delete exception:', error);
                         this.showNotification(`Fel: ${error.message}`, 'error');
                     }
                 }
@@ -892,20 +883,15 @@
                         url += `?search=${encodeURIComponent(searchQuery)}`;
                     }
 
-                    console.log('Fetching devices from:', url);
                     const response = await fetch(url);
-                    console.log('Devices response:', response);
                     if (response.ok) {
                         this.devices = await response.json();
-                        console.log('Loaded devices:', this.devices);
                         this.render();
                     } else {
                         const error = await response.json();
-                        console.log('Load devices error:', error);
                         this.showNotification(`Fel vid laddning av enheter: ${error.error}`, 'error');
                     }
                 } catch (error) {
-                    console.log('Load devices exception:', error);
                     this.showNotification(`Fel vid laddning av enheter: ${error.message}`, 'error');
                     this.devices = [];
                     this.render();
@@ -968,11 +954,8 @@
                     const editButtons = inventoryList.querySelectorAll('.btn-edit');
                     const deleteButtons = inventoryList.querySelectorAll('.btn-delete');
                     
-                    console.log('Attaching event listeners to', editButtons.length, 'edit buttons and', deleteButtons.length, 'delete buttons');
-                    
                     editButtons.forEach((button, index) => {
                         button.addEventListener('click', (e) => {
-                            console.log('Edit button clicked for device:', e.target.getAttribute('data-device-id'));
                             const deviceId = parseInt(e.target.getAttribute('data-device-id'));
                             this.openEditModalById(deviceId);
                         });
@@ -980,7 +963,6 @@
                     
                     deleteButtons.forEach((button, index) => {
                         button.addEventListener('click', (e) => {
-                            console.log('Delete button clicked for device:', e.target.getAttribute('data-device-id'));
                             const deviceId = parseInt(e.target.getAttribute('data-device-id'));
                             this.deleteDevice(deviceId);
                         });
@@ -1044,9 +1026,6 @@
             }
         `;
         document.head.appendChild(style);
-
-        // Initialize the inventory system
-        const inventory = new InventorySystem();
     </script>
     
     <!-- Edit Device Modal -->
