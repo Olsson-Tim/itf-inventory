@@ -635,16 +635,17 @@
                 this.devices = [];
                 this.searchTimeout = null;
                 this.currentDevice = null;
-                this.initEventListeners();
-                // Add a small delay to ensure DOM is fully loaded
+                // Delay initialization to ensure DOM is fully loaded
                 setTimeout(() => {
+                    this.initEventListeners();
                     this.loadDevices();
                     this.loadStats();
+                    this.initDarkMode();
                 }, 100);
-                this.initDarkMode();
             }
 
             initEventListeners() {
+                // Check that all elements exist before attaching listeners
                 const form = document.getElementById('device-form');
                 const searchInput = document.getElementById('search-input');
                 const importBtn = document.getElementById('import-btn');
@@ -655,24 +656,26 @@
                 const editForm = document.getElementById('edit-device-form');
                 const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-                form.addEventListener('submit', (e) => this.handleSubmit(e));
-                searchInput.addEventListener('input', (e) => this.handleSearch(e));
-                importBtn.addEventListener('click', () => csvFile.click());
-                exportBtn.addEventListener('click', () => this.exportDevices());
-                csvFile.addEventListener('change', (e) => this.importDevices(e));
-                editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
-                closeModal.addEventListener('click', () => this.closeEditModal());
-                
-                if (darkModeToggle) {
+                // Only attach listeners if all elements exist
+                if (form && searchInput && importBtn && exportBtn && csvFile && 
+                    editModal && closeModal && editForm && darkModeToggle) {
+                    
+                    form.addEventListener('submit', (e) => this.handleSubmit(e));
+                    searchInput.addEventListener('input', (e) => this.handleSearch(e));
+                    importBtn.addEventListener('click', () => csvFile.click());
+                    exportBtn.addEventListener('click', () => this.exportDevices());
+                    csvFile.addEventListener('change', (e) => this.importDevices(e));
+                    editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
+                    closeModal.addEventListener('click', () => this.closeEditModal());
                     darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
-                }
 
-                // Close modal when clicking outside
-                window.addEventListener('click', (e) => {
-                    if (e.target === editModal) {
-                        this.closeEditModal();
-                    }
-                });
+                    // Close modal when clicking outside
+                    window.addEventListener('click', (e) => {
+                        if (e.target === editModal) {
+                            this.closeEditModal();
+                        }
+                    });
+                }
             }
 
             initDarkMode() {
@@ -930,17 +933,17 @@
                             <div class="status-badge status-${device.status.toLowerCase().replace(' ', '-')}">${this.escapeHtml(device.status)}</div>
                         </div>
                         <div class="device-details">
-                            ${device.serial_number ? `<div class="device-detail"><span class="detail-label">Serial:</span> ${this.escapeHtml(device.serial_number)}</div>` : ''}
-                            ${device.manufacturer ? `<div class="device-detail"><span class="detail-label">Manufacturer:</span> ${this.escapeHtml(device.manufacturer)}</div>` : ''}
-                            ${device.model ? `<div class="device-detail"><span class="detail-label">Model:</span> ${this.escapeHtml(device.model)}</div>` : ''}
-                            ${device.location ? `<div class="device-detail"><span class="detail-label">Location:</span> ${this.escapeHtml(device.location)}</div>` : ''}
-                            ${device.assigned_to ? `<div class="device-detail"><span class="detail-label">Assigned to:</span> ${this.escapeHtml(device.assigned_to)}</div>` : ''}
-                            <div class="device-detail"><span class="detail-label">Added:</span> ${new Date(device.date_added).toLocaleDateString()}</div>
-                            ${device.notes ? `<div class="device-detail"><span class="detail-label">Notes:</span> ${this.escapeHtml(device.notes)}</div>` : ''}
+                            ${device.serial_number ? `<div class="device-detail"><span class="detail-label">Serienummer:</span> ${this.escapeHtml(device.serial_number)}</div>` : ''}
+                            ${device.manufacturer ? `<div class="device-detail"><span class="detail-label">Tillverkare:</span> ${this.escapeHtml(device.manufacturer)}</div>` : ''}
+                            ${device.model ? `<div class="device-detail"><span class="detail-label">Modell:</span> ${this.escapeHtml(device.model)}</div>` : ''}
+                            ${device.location ? `<div class="device-detail"><span class="detail-label">Plats:</span> ${this.escapeHtml(device.location)}</div>` : ''}
+                            ${device.assigned_to ? `<div class="device-detail"><span class="detail-label">Tilldelad till:</span> ${this.escapeHtml(device.assigned_to)}</div>` : ''}
+                            <div class="device-detail"><span class="detail-label">Tillagd:</span> ${new Date(device.date_added).toLocaleDateString()}</div>
+                            ${device.notes ? `<div class="device-detail"><span class="detail-label">Anteckningar:</span> ${this.escapeHtml(device.notes)}</div>` : ''}
                         </div>
                         <div class="device-actions">
-                            <button class="btn-small btn-edit" onclick="inventory.openEditModalById(${device.id})">Redigera enhet</button>
-                            <button class="btn-small btn-delete" onclick="inventory.deleteDevice(${device.id})">Ta bort enhet</button>
+                            <button class="btn-small btn-edit" data-device-id="${device.id}">Redigera enhet</button>
+                            <button class="btn-small btn-delete" data-device-id="${device.id}">Ta bort enhet</button>
                         </div>
                     </div>
                 `).join('');
@@ -1068,7 +1071,8 @@
 
     <!-- Initialize the inventory system -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        window.inventory = null;
+        window.addEventListener('load', () => {
             window.inventory = new InventorySystem();
         });
     </script>
