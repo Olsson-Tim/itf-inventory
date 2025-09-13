@@ -94,6 +94,40 @@ app.get('/api/devices', (req, res) => {
     });
 });
 
+// Bulk export devices as CSV
+app.get('/api/devices/export', (req, res) => {
+    const query = 'SELECT * FROM devices ORDER BY date_added DESC';
+    
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        
+        // Create CSV header
+        const headers = ['id', 'name', 'type', 'serial_number', 'manufacturer', 'model', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
+        let csv = headers.join(',') + '\n';
+        
+        // Add data rows
+        rows.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header] || '';
+                // Escape quotes and wrap in quotes if needed
+                if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+                    return `"${value.replace(/"/g, '""')}"`;
+                }
+                return value;
+            });
+            csv += values.join(',') + '\n';
+        });
+        
+        // Set headers for file download
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="devices.csv"');
+        res.send(csv);
+    });
+});
+
 // Get device by ID
 app.get('/api/devices/:id', (req, res) => {
     const { id } = req.params;

@@ -717,10 +717,10 @@
                         this.loadDevices();
                         this.loadStats();
                         this.resetForm();
-                        this.showNotification('Device added successfully!', 'success');
+                        this.showNotification(`Enheten tillagd!`, 'success');
                     } else {
                         const error = await response.json();
-                        this.showNotification(`Error: ${error.error}`, 'error');
+                        this.showNotification(`Fel: ${error.error}`, 'error');
                     }
                 } catch (error) {
                     this.showNotification(`Error: ${error.message}`, 'error');
@@ -766,10 +766,10 @@
                         this.closeEditModal();
                         this.loadDevices();
                         this.loadStats();
-                        this.showNotification('Device updated successfully!', 'success');
+                        this.showNotification(`Enheten uppdaterades!`, 'success');
                     } else {
                         const error = await response.json();
-                        this.showNotification(`Error: ${error.error}`, 'error');
+                        this.showNotification(`Fel: ${error.error}`, 'error');
                     }
                 } catch (error) {
                     this.showNotification(`Error: ${error.message}`, 'error');
@@ -816,7 +816,7 @@
                 if (!file) return;
 
                 if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-                    this.showNotification('Please select a CSV file', 'error');
+                    this.showNotification('Välj en CSV-fil', 'error');
                     return;
                 }
 
@@ -840,16 +840,37 @@
                             this.showNotification(result.message, 'success');
                         } else {
                             const error = await response.json();
-                            this.showNotification(`Import failed: ${error.error}`, 'error');
+                            this.showNotification(`Importen misslyckades: ${error.error}`, 'error');
                         }
                     } catch (error) {
-                        this.showNotification(`Error importing devices: ${error.message}`, 'error');
+                        this.showNotification(`Fel vid import: ${error.message}`, 'error');
                     }
                 };
 
                 reader.readAsText(file);
                 // Reset file input
                 e.target.value = '';
+            }
+
+            async deleteDevice(id) {
+                if (confirm('Är du säker på att du vill ta bort denna enhet?')) {
+                    try {
+                        const response = await fetch(`/api/devices/${id}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            this.loadDevices();
+                            this.loadStats();
+                            this.showNotification('Enheten har tagits bort!', 'success');
+                        } else {
+                            const error = await response.json();
+                            this.showNotification(`Fel: ${error.error}`, 'error');
+                        }
+                    } catch (error) {
+                        this.showNotification(`Fel: ${error.message}`, 'error');
+                    }
+                }
             }
 
             async loadDevices(searchQuery = '') {
@@ -865,10 +886,10 @@
                         this.render();
                     } else {
                         const error = await response.json();
-                        this.showNotification(`Error loading devices: ${error.error}`, 'error');
+                        this.showNotification(`Fel vid laddning av enheter: ${error.error}`, 'error');
                     }
                 } catch (error) {
-                    this.showNotification(`Error loading devices: ${error.message}`, 'error');
+                    this.showNotification(`Fel vid laddning av enheter: ${error.message}`, 'error');
                     this.devices = [];
                     this.render();
                 }
