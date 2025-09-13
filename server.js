@@ -259,8 +259,7 @@ app.get('/api/stats', (req, res) => {
     const queries = [
         'SELECT COUNT(*) as total FROM devices',
         "SELECT COUNT(*) as available FROM devices WHERE status = 'Available'",
-        "SELECT COUNT(*) as in_use FROM devices WHERE status = 'In Use'",
-        "SELECT COUNT(*) as maintenance FROM devices WHERE status = 'Maintenance'"
+        "SELECT COUNT(*) as in_use FROM devices WHERE status = 'In Use'"
     ];
     
     const stats = {};
@@ -273,7 +272,7 @@ app.get('/api/stats', (req, res) => {
                 return;
             }
             
-            const keys = ['total', 'available', 'in_use', 'maintenance'];
+            const keys = ['total', 'available', 'in_use'];
             stats[keys[index]] = Object.values(row)[0];
             completed++;
             

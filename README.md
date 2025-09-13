@@ -101,6 +101,10 @@ Obligatoriska fält:
 - `type` 
 - `status`
 
+Tillgängliga statusvärden:
+- `Available` (Tillgänglig)
+- `In Use` (Används)
+
 Se `example_devices.csv` för ett komplett exempel.
 
 ## API-slutpunkter

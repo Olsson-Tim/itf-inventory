@@ -555,10 +555,6 @@
                     <div class="stat-number" id="inuse-devices">0</div>
                     <div class="stat-label">Används</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="maintenance-devices">0</div>
-                    <div class="stat-label">Underhåll</div>
-                </div>
             </div>
 
             <!-- Add Device Form -->
@@ -596,7 +592,6 @@
                             <select id="status" required>
                                 <option value="Available">Tillgänglig</option>
                                 <option value="In Use">Används</option>
-                                <option value="Maintenance">Underhåll</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -679,7 +674,6 @@
                         <select id="edit-status" required>
                             <option value="Available">Tillgänglig</option>
                             <option value="In Use">Används</option>
-                            <option value="Maintenance">Underhåll</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1045,7 +1039,6 @@
                 document.getElementById('total-devices').textContent = stats.total || 0;
                 document.getElementById('available-devices').textContent = stats.available || 0;
                 document.getElementById('inuse-devices').textContent = stats.in_use || 0;
-                document.getElementById('maintenance-devices').textContent = stats.maintenance || 0;
             }
 
             resetForm() {
