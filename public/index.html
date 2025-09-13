@@ -772,7 +772,7 @@
                         this.showNotification(`Fel: ${error.error}`, 'error');
                     }
                 } catch (error) {
-                    this.showNotification(`Error: ${error.message}`, 'error');
+                    this.showNotification(`Fel: ${error.message}`, 'error');
                 }
             }
 
@@ -939,8 +939,8 @@
                             ${device.notes ? `<div class="device-detail"><span class="detail-label">Notes:</span> ${this.escapeHtml(device.notes)}</div>` : ''}
                         </div>
                         <div class="device-actions">
-                            <button class="btn-small btn-edit" onclick="inventory.openEditModalById(${device.id})">Edit Device</button>
-                            <button class="btn-small btn-delete" onclick="inventory.deleteDevice(${device.id})">Delete Device</button>
+                            <button class="btn-small btn-edit" onclick="inventory.openEditModalById(${device.id})">Redigera enhet</button>
+                            <button class="btn-small btn-delete" onclick="inventory.deleteDevice(${device.id})">Ta bort enhet</button>
                         </div>
                     </div>
                 `).join('');
@@ -1069,8 +1069,7 @@
     <!-- Initialize the inventory system -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM content loaded, initializing inventory system');
-            const inventory = new InventorySystem();
+            window.inventory = new InventorySystem();
         });
     </script>
 </body>
