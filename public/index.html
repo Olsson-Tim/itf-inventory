@@ -518,6 +518,18 @@
         .dark-mode .dark-mode-toggle:hover {
             background: rgba(108, 108, 108, 0.5);
         }
+
+        /* Notification animation */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -626,6 +638,65 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Edit Device Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 class="modal-title">✏️ Redigera enhet</h2>
+            <form id="edit-device-form">
+                <input type="hidden" id="edit-device-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-device-name">Enhetsnamn *</label>
+                        <input type="text" id="edit-device-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-device-type">Enhetstyp *</label>
+                        <select id="edit-device-type" required>
+                            <option value="">Välj typ</option>
+                            <option value="Computer">Dator</option>
+                            <option value="Tablet">Surfplatta</option>
+                            <option value="Phone">Mobiltelefon</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-serial-number">Serienummer</label>
+                        <input type="text" id="edit-serial-number">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-manufacturer">Tillverkare</label>
+                        <input type="text" id="edit-manufacturer">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-model">Modell</label>
+                        <input type="text" id="edit-model">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-status">Status *</label>
+                        <select id="edit-status" required>
+                            <option value="Available">Tillgänglig</option>
+                            <option value="In Use">Används</option>
+                            <option value="Maintenance">Underhåll</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-location">Plats</label>
+                        <input type="text" id="edit-location" placeholder="t.ex. Kontor 201, Lager">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-assigned-to">Tilldelad till</label>
+                        <input type="text" id="edit-assigned-to" placeholder="Anställd namn">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-notes">Anteckningar</label>
+                    <textarea id="edit-notes" placeholder="Ytterligare anteckningar om enheten..."></textarea>
+                </div>
+                <button type="submit" class="btn">Uppdatera enhet</button>
+            </form>
         </div>
     </div>
 
@@ -916,8 +987,8 @@
                 if (this.devices.length === 0) {
                     inventoryList.innerHTML = `
                         <div class="empty-state">
-                            <h3>No devices found</h3>
-                            <p>Add your first device using the form above.</p>
+                            <h3>Inga enheter hittades</h3>
+                            <p>Lägg till din första enhet med formuläret ovan.</p>
                         </div>
                     `;
                     return;
@@ -946,7 +1017,7 @@
                             <button class="btn-small btn-delete" data-device-id="${device.id}">Ta bort enhet</button>
                         </div>
                     </div>
-                }).join('');
+                `).join('');
                 
                 // Attach event listeners to the buttons
                 setTimeout(() => {
@@ -954,14 +1025,14 @@
                     const editButtons = inventoryList.querySelectorAll('.btn-edit');
                     const deleteButtons = inventoryList.querySelectorAll('.btn-delete');
                     
-                    editButtons.forEach((button, index) => {
+                    editButtons.forEach((button) => {
                         button.addEventListener('click', (e) => {
                             const deviceId = parseInt(e.target.getAttribute('data-device-id'));
                             this.openEditModalById(deviceId);
                         });
                     });
                     
-                    deleteButtons.forEach((button, index) => {
+                    deleteButtons.forEach((button) => {
                         button.addEventListener('click', (e) => {
                             const deviceId = parseInt(e.target.getAttribute('data-device-id'));
                             this.deleteDevice(deviceId);
@@ -1010,90 +1081,9 @@
                 }, 3000);
             }
         }
-        }
 
-        // Add CSS animation for notifications
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-    
-    <!-- Edit Device Modal -->
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="close-modal">&times;</span>
-            <h2 class="modal-title">✏️ Redigera enhet</h2>
-            <form id="edit-device-form">
-                <input type="hidden" id="edit-device-id">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="edit-device-name">Enhetsnamn *</label>
-                        <input type="text" id="edit-device-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-device-type">Enhetstyp *</label>
-                        <select id="edit-device-type" required>
-                            <option value="">Välj typ</option>
-                            <option value="Computer">Dator</option>
-                            <option value="Tablet">Surfplatta</option>
-                            <option value="Phone">Mobiltelefon</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-serial-number">Serienummer</label>
-                        <input type="text" id="edit-serial-number">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-manufacturer">Tillverkare</label>
-                        <input type="text" id="edit-manufacturer">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-model">Modell</label>
-                        <input type="text" id="edit-model">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-status">Status *</label>
-                        <select id="edit-status" required>
-                            <option value="Available">Tillgänglig</option>
-                            <option value="In Use">Används</option>
-                            <option value="Maintenance">Underhåll</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-location">Plats</label>
-                        <input type="text" id="edit-location" placeholder="t.ex. Kontor 201, Lager">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-assigned-to">Tilldelad till</label>
-                        <input type="text" id="edit-assigned-to" placeholder="Anställd namn">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="edit-notes">Anteckningar</label>
-                    <textarea id="edit-notes" placeholder="Ytterligare anteckningar om enheten..."></textarea>
-                </div>
-                <button type="submit" class="btn">Uppdatera enhet</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Initialize the inventory system -->
-    <script>
+        // Initialize the inventory system
         window.inventory = null;
         window.addEventListener('load', () => {
             window.inventory = new InventorySystem();
         });
-    </script>
-</body>
-</html>
