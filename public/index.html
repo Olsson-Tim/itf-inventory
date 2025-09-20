@@ -557,8 +557,13 @@
                 </div>
             </div>
 
-            <!-- Add Device Form -->
-            <div class="form-section">
+            <!-- Add Device Button -->
+            <div class="form-section" style="text-align: center;">
+                <button id="show-add-device-btn" class="btn">➕ Lägg till enhet</button>
+            </div>
+
+            <!-- Add Device Form (Hidden by default) -->
+            <div class="form-section" id="add-device-form-section" style="display: none;">
                 <h2 class="form-title">➕ Lägg till ny enhet</h2>
                 <form id="device-form">
                     <div class="form-grid">
@@ -610,6 +615,7 @@
                     <div class="form-group">
                         <div class="form-buttons">
                             <button type="submit" class="btn">Lägg till enhet</button>
+                            <button type="button" id="cancel-add-device" class="btn" style="margin-left: 10px; background: linear-gradient(135deg, #6c757d, #495057);">Avbryt</button>
                             <button type="button" id="import-btn" class="btn" style="margin-left: 10px;">📥 Importera enheter</button>
                             <button type="button" id="export-btn" class="btn" style="margin-left: 10px;">📤 Exportera enheter</button>
                         </div>
@@ -720,10 +726,14 @@
                 const closeModal = document.getElementById('close-modal');
                 const editForm = document.getElementById('edit-device-form');
                 const darkModeToggle = document.getElementById('dark-mode-toggle');
+                const showAddDeviceBtn = document.getElementById('show-add-device-btn');
+                const cancelAddDeviceBtn = document.getElementById('cancel-add-device');
+                const addDeviceFormSection = document.getElementById('add-device-form-section');
 
                 // Only attach listeners if all elements exist
                 if (form && searchInput && importBtn && exportBtn && csvFile && 
-                    editModal && closeModal && editForm && darkModeToggle) {
+                    editModal && closeModal && editForm && darkModeToggle && 
+                    showAddDeviceBtn && cancelAddDeviceBtn && addDeviceFormSection) {
                     
                     form.addEventListener('submit', (e) => this.handleSubmit(e));
                     searchInput.addEventListener('input', (e) => this.handleSearch(e));
@@ -733,6 +743,15 @@
                     editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
                     closeModal.addEventListener('click', () => this.closeEditModal());
                     darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
+                    showAddDeviceBtn.addEventListener('click', () => {
+                        showAddDeviceBtn.parentElement.style.display = 'none';
+                        addDeviceFormSection.style.display = 'block';
+                    });
+                    cancelAddDeviceBtn.addEventListener('click', () => {
+                        addDeviceFormSection.style.display = 'none';
+                        showAddDeviceBtn.parentElement.style.display = 'block';
+                        this.resetForm();
+                    });
 
                     // Close modal when clicking outside
                     window.addEventListener('click', (e) => {
@@ -1043,6 +1062,9 @@
 
             resetForm() {
                 document.getElementById('device-form').reset();
+                // Hide the form and show the button after adding a device
+                document.getElementById('add-device-form-section').style.display = 'none';
+                document.getElementById('show-add-device-btn').parentElement.style.display = 'block';
             }
 
             escapeHtml(text) {
