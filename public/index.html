@@ -557,9 +557,16 @@
                 </div>
             </div>
 
-            <!-- Add Device Button -->
-            <div class="form-section" style="text-align: center;">
-                <button id="show-add-device-btn" class="btn">➕ Lägg till enhet</button>
+            <!-- Search and Add Device Button -->
+            <div class="form-section">
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <div style="flex: 1; min-width: 300px; max-width: 500px;">
+                        <input type="text" id="search-input" placeholder="🔍 Sök enheter efter namn, typ, serienummer...">
+                    </div>
+                    <div>
+                        <button id="show-add-device-btn" class="btn">➕ Lägg till enhet</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Add Device Form (Hidden by default) -->
@@ -622,11 +629,6 @@
                     </div>
                 </form>
                 <input type="file" id="csv-file" accept=".csv" style="display: none;">
-            </div>
-
-            <!-- Search -->
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="🔍 Sök enheter efter namn, typ, serienummer...">
             </div>
 
             <!-- Inventory Display -->
@@ -744,12 +746,12 @@
                     closeModal.addEventListener('click', () => this.closeEditModal());
                     darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
                     showAddDeviceBtn.addEventListener('click', () => {
-                        showAddDeviceBtn.parentElement.style.display = 'none';
+                        showAddDeviceBtn.parentElement.parentElement.parentElement.style.display = 'none';
                         addDeviceFormSection.style.display = 'block';
                     });
                     cancelAddDeviceBtn.addEventListener('click', () => {
                         addDeviceFormSection.style.display = 'none';
-                        showAddDeviceBtn.parentElement.style.display = 'block';
+                        showAddDeviceBtn.parentElement.parentElement.parentElement.style.display = 'block';
                         this.resetForm();
                     });
 
@@ -1064,7 +1066,7 @@
                 document.getElementById('device-form').reset();
                 // Hide the form and show the button after adding a device
                 document.getElementById('add-device-form-section').style.display = 'none';
-                document.getElementById('show-add-device-btn').parentElement.style.display = 'block';
+                document.getElementById('show-add-device-btn').parentElement.parentElement.parentElement.style.display = 'block';
             }
 
             escapeHtml(text) {
