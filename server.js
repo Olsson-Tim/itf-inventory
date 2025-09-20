@@ -140,7 +140,7 @@ app.get('/api/devices/:id', (req, res) => {
         if (row) {
             res.json(row);
         } else {
-            res.status(404).json({ error: 'Device not found' });
+            res.status(404).json({ error: 'Enheten hittades inte' });
         }
     });
 });
@@ -161,7 +161,7 @@ app.post('/api/devices', (req, res) => {
     
     // Validation
     if (!name || !type || !status) {
-        return res.status(400).json({ error: 'Name, type, and status are required' });
+        return res.status(400).json({ error: 'Namn, typ och status är obligatoriska' });
     }
     
     const query = `
@@ -203,7 +203,7 @@ app.put('/api/devices/:id', (req, res) => {
     
     // Validation
     if (!name || !type || !status) {
-        return res.status(400).json({ error: 'Name, type, and status are required' });
+        return res.status(400).json({ error: 'Namn, typ och status är obligatoriska' });
     }
     
     const query = `
@@ -246,11 +246,11 @@ app.delete('/api/devices/:id', (req, res) => {
         }
         
         if (this.changes === 0) {
-            res.status(404).json({ error: 'Device not found' });
+            res.status(404).json({ error: 'Enheten hittades inte' });
             return;
         }
         
-        res.json({ message: 'Device deleted successfully' });
+        res.json({ message: 'Enheten har tagits bort!' });
     });
 });
 
@@ -329,7 +329,7 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
         const lines = csv.split('\n').filter(line => line.trim() !== '');
         
         if (lines.length < 2) {
-            return res.status(400).json({ error: 'CSV file must contain headers and at least one data row' });
+            return res.status(400).json({ error: 'CSV-filen måste innehålla rubriker och minst en datarad' });
         }
         
         // Parse headers
@@ -340,7 +340,7 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
         const missingFields = requiredFields.filter(field => !headers.includes(field));
         
         if (missingFields.length > 0) {
-            return res.status(400).json({ error: `Missing required fields in CSV: ${missingFields.join(', ')}` });
+            return res.status(400).json({ error: `Saknade obligatoriska fält i CSV: ${missingFields.join(', ')}` });
         }
         
         // Parse data rows
@@ -355,7 +355,7 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
             });
             
             if (values.length !== headers.length) {
-                return res.status(400).json({ error: `Row ${i} has incorrect number of columns` });
+                return res.status(400).json({ error: `Rad ${i} har felaktigt antal kolumner` });
             }
             
             const device = {};
@@ -365,7 +365,7 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
             
             // Validate required fields
             if (!device.name || !device.type || !device.status) {
-                return res.status(400).json({ error: `Row ${i} is missing required fields (name, type, status)` });
+                return res.status(400).json({ error: `Rad ${i} saknar obligatoriska fält (namn, typ, status)` });
             }
             
             devices.push(device);
@@ -414,7 +414,7 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
             });
         });
     } catch (error) {
-        res.status(500).json({ error: `Error parsing CSV: ${error.message}` });
+        res.status(500).json({ error: `Fel vid tolkning av CSV: ${error.message}` });
     }
 });
 
@@ -426,22 +426,22 @@ app.get('/', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
+    res.status(500).json({ error: 'Något gick fel!' });
 });
 
 // Handle 404
 app.use((req, res) => {
-    res.status(404).json({ error: 'Endpoint not found' });
+    res.status(404).json({ error: 'Slutpunkten hittades inte' });
 });
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-    console.log('\nShutting down server...');
+    console.log('\nStänger av servern...');
     db.close((err) => {
         if (err) {
-            console.error('Error closing database:', err.message);
+            console.error('Fel vid stängning av databas:', err.message);
         } else {
-            console.log('Database connection closed.');
+            console.log('Databasanslutningen stängd.');
         }
         process.exit(0);
     });

@@ -1012,9 +1012,9 @@
                         <div class="device-header">
                             <div>
                                 <div class="device-name">${this.escapeHtml(device.name)}</div>
-                                <div class="device-type">${this.escapeHtml(device.type)}</div>
+                                <div class="device-type">${this.translateDeviceType(device.type)}</div>
                             </div>
-                            <div class="status-badge status-${device.status.toLowerCase().replace(' ', '-')}">${this.escapeHtml(device.status)}</div>
+                            <div class="status-badge status-${this.translateStatusClass(device.status)}">${this.translateStatus(device.status)}</div>
                         </div>
                         <div class="device-details">
                             ${device.serial_number ? `<div class="device-detail"><span class="detail-label">Serienummer:</span> ${this.escapeHtml(device.serial_number)}</div>` : ''}
@@ -1072,6 +1072,31 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            translateDeviceType(type) {
+                const translations = {
+                    'Computer': 'Dator',
+                    'Tablet': 'Surfplatta',
+                    'Phone': 'Mobiltelefon'
+                };
+                return translations[type] || type;
+            }
+
+            translateStatus(status) {
+                const translations = {
+                    'Available': 'Tillgänglig',
+                    'In Use': 'Används'
+                };
+                return translations[status] || status;
+            }
+
+            translateStatusClass(status) {
+                const translations = {
+                    'Available': 'available',
+                    'In Use': 'in-use'
+                };
+                return translations[status] || status.toLowerCase().replace(' ', '-');
             }
 
             showNotification(message, type) {
