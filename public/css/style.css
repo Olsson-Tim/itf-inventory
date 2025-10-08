@@ -536,6 +536,51 @@ textarea {
     background: rgba(108, 108, 108, 0.5);
 }
 
+/* Form section hidden by default */
+#add-device-form-section.hidden,
+.hidden {
+    display: none;
+}
+
+/* Buttons with left margin */
+#cancel-add-device,
+#import-btn,
+#export-btn {
+    margin-left: 10px;
+}
+
+/* Cancel button with special background */
+#cancel-add-device {
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+/* Hidden CSV file input */
+#csv-file {
+    display: none;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    min-width: 250px;
+}
+
+.notification.success {
+    background: #28a745;
+}
+
+.notification.error {
+    background: #dc3545;
+}
+
 /* Notification animation */
 @keyframes slideIn {
     from {

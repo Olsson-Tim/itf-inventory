@@ -41,12 +41,12 @@ class InventorySystem {
             closeModal.addEventListener('click', () => this.closeEditModal());
             darkModeToggle.addEventListener('click', () => this.toggleDarkMode());
             showAddDeviceBtn.addEventListener('click', () => {
-                showAddDeviceBtn.parentElement.parentElement.parentElement.style.display = 'none';
-                addDeviceFormSection.style.display = 'block';
+                showAddDeviceBtn.parentElement.parentElement.parentElement.classList.add('hidden');
+                addDeviceFormSection.classList.remove('hidden');
             });
             cancelAddDeviceBtn.addEventListener('click', () => {
-                addDeviceFormSection.style.display = 'none';
-                showAddDeviceBtn.parentElement.parentElement.parentElement.style.display = 'block';
+                addDeviceFormSection.classList.add('hidden');
+                showAddDeviceBtn.parentElement.parentElement.parentElement.classList.remove('hidden');
                 this.resetForm();
             });
 
@@ -360,8 +360,8 @@ class InventorySystem {
     resetForm() {
         document.getElementById('device-form').reset();
         // Hide the form and show the button after adding a device
-        document.getElementById('add-device-form-section').style.display = 'none';
-        document.getElementById('show-add-device-btn').parentElement.parentElement.parentElement.style.display = 'block';
+        document.getElementById('add-device-form-section').classList.add('hidden');
+        document.getElementById('show-add-device-btn').parentElement.parentElement.parentElement.classList.remove('hidden');
     }
 
     escapeHtml(text) {
@@ -399,18 +399,7 @@ class InventorySystem {
     showNotification(message, type) {
         const notification = document.createElement('div');
         notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#28a745' : '#dc3545'};
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-        `;
+        notification.className = type === 'success' ? 'notification success' : 'notification error';
         
         document.body.appendChild(notification);
         setTimeout(() => {
@@ -419,21 +408,6 @@ class InventorySystem {
     }
 }
 
-// Add CSS animation for notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
 
 // Initialize the inventory system
 window.inventory = null;
