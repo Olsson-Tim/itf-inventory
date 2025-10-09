@@ -27,6 +27,11 @@ class InventorySystem {
         const cancelAddDeviceBtn = document.getElementById('cancel-add-device');
         const addDeviceFormSection = document.getElementById('add-device-form-section');
 
+        // Ensure the add device form is hidden initially
+        if (addDeviceFormSection) {
+            addDeviceFormSection.classList.add('hidden');
+        }
+
         // Only attach listeners if all elements exist
         if (form && searchInput && importBtn && exportBtn && csvFile && 
             editModal && closeModal && editForm && darkModeToggle && 
@@ -79,9 +84,7 @@ class InventorySystem {
         const device = {
             name: document.getElementById('device-name').value,
             type: document.getElementById('device-type').value,
-            serial_number: document.getElementById('serial-number').value,
-            manufacturer: document.getElementById('manufacturer').value,
-            model: document.getElementById('model').value,
+            amount: document.getElementById('amount').value,
             status: document.getElementById('status').value,
             location: document.getElementById('location').value,
             assigned_to: document.getElementById('assigned-to').value,
@@ -128,9 +131,7 @@ class InventorySystem {
             id: document.getElementById('edit-device-id').value,
             name: document.getElementById('edit-device-name').value,
             type: document.getElementById('edit-device-type').value,
-            serial_number: document.getElementById('edit-serial-number').value,
-            manufacturer: document.getElementById('edit-manufacturer').value,
-            model: document.getElementById('edit-model').value,
+            amount: document.getElementById('edit-amount').value,
             status: document.getElementById('edit-status').value,
             location: document.getElementById('edit-location').value,
             assigned_to: document.getElementById('edit-assigned-to').value,
@@ -174,9 +175,7 @@ class InventorySystem {
         document.getElementById('edit-device-id').value = device.id;
         document.getElementById('edit-device-name').value = device.name;
         document.getElementById('edit-device-type').value = device.type;
-        document.getElementById('edit-serial-number').value = device.serial_number || '';
-        document.getElementById('edit-manufacturer').value = device.manufacturer || '';
-        document.getElementById('edit-model').value = device.model || '';
+        document.getElementById('edit-amount').value = device.amount || '';
         document.getElementById('edit-status').value = device.status;
         document.getElementById('edit-location').value = device.location || '';
         document.getElementById('edit-assigned-to').value = device.assigned_to || '';
@@ -314,9 +313,7 @@ class InventorySystem {
                     <div class="status-badge status-${this.translateStatusClass(device.status)}">${this.translateStatus(device.status)}</div>
                 </div>
                 <div class="device-details">
-                    ${device.serial_number ? `<div class="device-detail"><span class="detail-label">Serienummer:</span> ${this.escapeHtml(device.serial_number)}</div>` : ''}
-                    ${device.manufacturer ? `<div class="device-detail"><span class="detail-label">Tillverkare:</span> ${this.escapeHtml(device.manufacturer)}</div>` : ''}
-                    ${device.model ? `<div class="device-detail"><span class="detail-label">Modell:</span> ${this.escapeHtml(device.model)}</div>` : ''}
+                    ${device.amount ? `<div class="device-detail"><span class="detail-label">Antal:</span> ${this.escapeHtml(device.amount)}</div>` : ''}
                     ${device.location ? `<div class="device-detail"><span class="detail-label">Plats:</span> ${this.escapeHtml(device.location)}</div>` : ''}
                     ${device.assigned_to ? `<div class="device-detail"><span class="detail-label">Tilldelad till:</span> ${this.escapeHtml(device.assigned_to)}</div>` : ''}
                     <div class="device-detail"><span class="detail-label">Tillagd:</span> ${new Date(device.date_added).toLocaleDateString()}</div>
@@ -373,9 +370,8 @@ class InventorySystem {
 
     translateDeviceType(type) {
         const translations = {
-            'Computer': 'Dator',
-            'Tablet': 'Surfplatta',
-            'Phone': 'Mobiltelefon'
+            'labb': 'Labb',
+            'del': 'Del'
         };
         return translations[type] || type;
     }

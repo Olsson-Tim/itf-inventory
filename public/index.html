@@ -10,8 +10,9 @@
     <button class="dark-mode-toggle" id="dark-mode-toggle">🌙</button>
     <div class="container">
         <div class="header">
-            <h1>📱 Enhetsinventarie System</h1>
-            <p>Spåra och hantera dina enheter med enkelhet</p>
+            <div class="header-content">
+                <h1><img src="./rc3.png" alt="Logo" class="logo"> Enhetsinventarie Syd</h1>
+            </div>
         </div>
         
         <div class="content">
@@ -35,7 +36,7 @@
             <div class="form-section">
                 <div class="search-bar-container">
                     <div class="search-input-wrapper">
-                        <input type="text" id="search-input" placeholder="🔍 Sök enheter efter namn, typ, serienummer...">
+                        <input type="text" id="search-input" placeholder="🔍 Sök enheter efter namn, typ...">
                     </div>
                     <div>
                         <button id="show-add-device-btn" class="btn">➕ Lägg till enhet</button>
@@ -44,7 +45,7 @@
             </div>
 
             <!-- Add Device Form (Hidden by default) -->
-            <div class="form-section" id="add-device-form-section"  >
+            <div class="form-section" id="add-device-form-section">
                 <h2 class="form-title">➕ Lägg till ny enhet</h2>
                 <form id="device-form">
                     <div class="form-grid">
@@ -56,23 +57,15 @@
                             <label for="device-type">Enhetstyp *</label>
                             <select id="device-type" required>
                                 <option value="">Välj typ</option>
-                                <option value="Computer">Dator</option>
-                                <option value="Tablet">Surfplatta</option>
-                                <option value="Phone">Mobiltelefon</option>
+                                <option value="labb">Labb</option>
+                                <option value="del">Del</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="serial-number">Serienummer</label>
-                            <input type="text" id="serial-number">
+                            <label for="amount">Antal</label>
+                            <input type="number" id="amount" min="1">
                         </div>
-                        <div class="form-group">
-                            <label for="manufacturer">Tillverkare</label>
-                            <input type="text" id="manufacturer">
-                        </div>
-                        <div class="form-group">
-                            <label for="model">Modell</label>
-                            <input type="text" id="model">
-                        </div>
+
                         <div class="form-group">
                             <label for="status">Status *</label>
                             <select id="status" required>
@@ -82,7 +75,7 @@
                         </div>
                         <div class="form-group">
                             <label for="location">Plats</label>
-                            <input type="text" id="location" placeholder="t.ex. Kontor 201, Lager">
+                            <input type="text" id="location" placeholder="t.ex. Helsingborg, Malmö, Lund">
                         </div>
                         <div class="form-group">
                             <label for="assigned-to">Tilldelad till</label>
@@ -134,23 +127,15 @@
                         <label for="edit-device-type">Enhetstyp *</label>
                         <select id="edit-device-type" required>
                             <option value="">Välj typ</option>
-                            <option value="Computer">Dator</option>
-                            <option value="Tablet">Surfplatta</option>
-                            <option value="Phone">Mobiltelefon</option>
+                            <option value="labb">Labb</option>
+                            <option value="del">Del</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="edit-serial-number">Serienummer</label>
-                        <input type="text" id="edit-serial-number">
+                        <label for="edit-amount">Antal</label>
+                        <input type="number" id="edit-amount" min="1">
                     </div>
-                    <div class="form-group">
-                        <label for="edit-manufacturer">Tillverkare</label>
-                        <input type="text" id="edit-manufacturer">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-model">Modell</label>
-                        <input type="text" id="edit-model">
-                    </div>
+
                     <div class="form-group">
                         <label for="edit-status">Status *</label>
                         <select id="edit-status" required>
@@ -160,7 +145,7 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-location">Plats</label>
-                        <input type="text" id="edit-location" placeholder="t.ex. Kontor 201, Lager">
+                        <input type="text" id="edit-location" placeholder="t.ex. Helsingborg, Malmö, Lund">
                     </div>
                     <div class="form-group">
                         <label for="edit-assigned-to">Tilldelad till</label>

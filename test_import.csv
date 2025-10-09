@@ -1,3 +1,3 @@
-name,type,serial_number,manufacturer,model,status,location,assigned_to,notes
-"Test Computer",Computer,TEST123,TestCorp,ModelX,Available,Office 1,,Test device
-"Test Phone",Phone,TEST456,TestCorp,ModelY,In Use,Office 2,John Doe,Another test device
+name,type,amount,status,location,assigned_to,notes
+"Test Lab Equipment",labb,1,Available,Office 1,,Test device
+"Test Component",del,3,In Use,Office 2,John Doe,Another test device

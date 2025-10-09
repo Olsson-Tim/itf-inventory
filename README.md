@@ -6,7 +6,7 @@ Ett enkelt och effektivt system för hantering av enhetsinventarier byggt med No
 
 - **Enhets hantering**: Lägg till, redigera, visa och ta bort enheter
 - **Massimport/Export**: Importera enheter från CSV-filer och exportera hela inventariet
-- **Sökfunktion**: Hitta snabbt enheter efter namn, typ, serienummer eller andra attribut
+- **Sökfunktion**: Hitta snabbt enheter efter namn, typ eller andra attribut
 - **Enhetsstatus spårning**: Spåra enhetens tillgänglighet med statusar (Tillgänglig, Används, Underhåll)
 - **Responsiv design**: Fungerar på stationära och mobila enheter
 - **Mörkt läge**: Ögonvänligt mörkt tema
@@ -92,8 +92,8 @@ Ett enkelt och effektivt system för hantering av enhetsinventarier byggt med No
 När du importerar enheter, använd följande CSV-format:
 
 ```csv
-name,type,serial_number,manufacturer,model,status,location,assigned_to,notes
-"Enhetsnamn",Computer,SN123456,Tillverkare,Modellnamn,Available,Plats,Tilldelad Person,Ytterligare anteckningar
+name,type,amount,status,location,assigned_to,notes
+"Enhetsnamn",labb,5,Available,Plats,Tilldelad Person,Ytterligare anteckningar
 ```
 
 Obligatoriska fält:

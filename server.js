@@ -38,9 +38,7 @@ function initializeDatabase() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             type TEXT NOT NULL,
-            serial_number TEXT,
-            manufacturer TEXT,
-            model TEXT,
+            amount INTEGER,
             status TEXT NOT NULL,
             location TEXT,
             assigned_to TEXT,
@@ -77,12 +75,12 @@ app.get('/api/devices', (req, res) => {
     if (search) {
         query = `
             SELECT * FROM devices 
-            WHERE name LIKE ? OR type LIKE ? OR serial_number LIKE ? 
-            OR manufacturer LIKE ? OR model LIKE ? OR location LIKE ? OR assigned_to LIKE ?
+            WHERE name LIKE ? OR type LIKE ? 
+            OR location LIKE ? OR assigned_to LIKE ?
             ORDER BY date_added DESC
         `;
         const searchTerm = `%${search}%`;
-        params = [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm];
+        params = [searchTerm, searchTerm, searchTerm, searchTerm];
     }
     
     db.all(query, params, (err, rows) => {
@@ -105,7 +103,7 @@ app.get('/api/devices/export', (req, res) => {
         }
         
         // Create CSV header
-        const headers = ['id', 'name', 'type', 'serial_number', 'manufacturer', 'model', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
+        const headers = ['id', 'name', 'type', 'amount', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
         let csv = headers.join(',') + '\n';
         
         // Add data rows
@@ -150,9 +148,7 @@ app.post('/api/devices', (req, res) => {
     const {
         name,
         type,
-        serial_number,
-        manufacturer,
-        model,
+        amount,
         status,
         location,
         assigned_to,
@@ -165,11 +161,11 @@ app.post('/api/devices', (req, res) => {
     }
     
     const query = `
-        INSERT INTO devices (name, type, serial_number, manufacturer, model, status, location, assigned_to, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO devices (name, type, amount, status, location, assigned_to, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     
-    db.run(query, [name, type, serial_number, manufacturer, model, status, location, assigned_to, notes], function(err) {
+    db.run(query, [name, type, amount, status, location, assigned_to, notes], function(err) {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
@@ -192,9 +188,7 @@ app.put('/api/devices/:id', (req, res) => {
     const {
         name,
         type,
-        serial_number,
-        manufacturer,
-        model,
+        amount,
         status,
         location,
         assigned_to,
@@ -208,12 +202,12 @@ app.put('/api/devices/:id', (req, res) => {
     
     const query = `
         UPDATE devices 
-        SET name = ?, type = ?, serial_number = ?, manufacturer = ?, model = ?, 
+        SET name = ?, type = ?, amount = ?, 
             status = ?, location = ?, assigned_to = ?, notes = ?, date_updated = CURRENT_TIMESTAMP
         WHERE id = ?
     `;
     
-    db.run(query, [name, type, serial_number, manufacturer, model, status, location, assigned_to, notes, id], function(err) {
+    db.run(query, [name, type, amount, status, location, assigned_to, notes, id], function(err) {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
@@ -299,7 +293,7 @@ app.get('/api/devices/export', (req, res) => {
         }
         
         // Create CSV header
-        const headers = ['id', 'name', 'type', 'serial_number', 'manufacturer', 'model', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
+        const headers = ['id', 'name', 'type', 'amount', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
         let csv = headers.join(',') + '\n';
         
         // Add data rows
@@ -368,13 +362,54 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
                 return res.status(400).json({ error: `Rad ${i} saknar obligatoriska fält (namn, typ, status)` });
             }
             
+            // Normalize status values to match expected English values
+            if (device.status) {
+                const statusMap = {
+                    // Swedish to English mappings
+                    'Tillgänglig': 'Available',
+                    'Används': 'In Use',
+                    'available': 'Available',
+                    'in use': 'In Use',
+                    // Case insensitive check
+                    'tillgänglig': 'Available',
+                    'används': 'In Use'
+                };
+                
+                const normalizedStatus = statusMap[device.status.toLowerCase()] || 
+                                        statusMap[device.status] || 
+                                        device.status;
+                device.status = normalizedStatus;
+            }
+            
+            // Normalize type values to match expected English values
+            if (device.type) {
+                const typeMap = {
+                    // Swedish to English mappings
+                    'Labb': 'labb',
+                    'Del': 'del',
+                    'labb': 'labb',
+                    'del': 'del',
+                    // Common misspellings or alternatives
+                    'laboration': 'labb',
+                    'laboratory': 'labb',
+                    'component': 'del',
+                    'part': 'del',
+                    'piece': 'del'
+                };
+                
+                const normalizedType = typeMap[device.type.toLowerCase()] || 
+                                      typeMap[device.type] || 
+                                      device.type;
+                device.type = normalizedType;
+            }
+            
             devices.push(device);
         }
         
         // Insert devices into database
         const insertQuery = `
-            INSERT INTO devices (name, type, serial_number, manufacturer, model, status, location, assigned_to, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO devices (name, type, amount, status, location, assigned_to, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         
         let insertedCount = 0;
@@ -385,9 +420,7 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
                 db.run(insertQuery, [
                     device.name,
                     device.type,
-                    device.serial_number || null,
-                    device.manufacturer || null,
-                    device.model || null,
+                    device.amount ? parseInt(device.amount) : null,
                     device.status,
                     device.location || null,
                     device.assigned_to || null,
