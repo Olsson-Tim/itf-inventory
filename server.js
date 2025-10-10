@@ -387,14 +387,18 @@ app.post('/api/devices/import', express.raw({ type: 'text/csv' }), (req, res) =>
                     // Swedish to English mappings
                     'Labb': 'labb',
                     'Del': 'del',
+                    'Hel': 'hel',
                     'labb': 'labb',
                     'del': 'del',
+                    'hel': 'hel',
                     // Common misspellings or alternatives
                     'laboration': 'labb',
                     'laboratory': 'labb',
                     'component': 'del',
                     'part': 'del',
-                    'piece': 'del'
+                    'piece': 'del',
+                    'hela': 'hel',
+                    'helm': 'hel'
                 };
                 
                 const normalizedType = typeMap[device.type.toLowerCase()] || 

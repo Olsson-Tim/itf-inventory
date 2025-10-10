@@ -371,7 +371,8 @@ class InventorySystem {
     translateDeviceType(type) {
         const translations = {
             'labb': 'Labb',
-            'del': 'Del'
+            'del': 'Del',
+            'hel': 'Hel'
         };
         return translations[type] || type;
     }
