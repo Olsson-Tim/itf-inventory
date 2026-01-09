@@ -251,25 +251,25 @@ app.delete('/api/devices/:id', (req, res) => {
 // Get statistics
 app.get('/api/stats', (req, res) => {
     const queries = [
-        'SELECT COUNT(*) as total FROM devices',
-        "SELECT COUNT(*) as available FROM devices WHERE status = 'Available'",
-        "SELECT COUNT(*) as in_use FROM devices WHERE status = 'In Use'"
+        'SELECT COALESCE(SUM(amount), 0) as total FROM devices',
+        "SELECT COALESCE(SUM(CASE WHEN status = 'Available' THEN amount ELSE 0 END), 0) as available FROM devices",
+        "SELECT COALESCE(SUM(CASE WHEN status = 'In Use' THEN amount ELSE 0 END), 0) as in_use FROM devices"
     ];
-    
+
     const stats = {};
     let completed = 0;
-    
+
     queries.forEach((query, index) => {
         db.get(query, (err, row) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            
+
             const keys = ['total', 'available', 'in_use'];
-            stats[keys[index]] = Object.values(row)[0];
+            stats[keys[index]] = parseInt(Object.values(row)[0]) || 0;
             completed++;
-            
+
             if (completed === queries.length) {
                 res.json(stats);
             }
@@ -280,40 +280,6 @@ app.get('/api/stats', (req, res) => {
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Bulk export devices as CSV
-app.get('/api/devices/export', (req, res) => {
-    const query = 'SELECT * FROM devices ORDER BY date_added DESC';
-    
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        
-        // Create CSV header
-        const headers = ['id', 'name', 'type', 'amount', 'status', 'location', 'assigned_to', 'notes', 'date_added', 'date_updated'];
-        let csv = headers.join(',') + '\n';
-        
-        // Add data rows
-        rows.forEach(row => {
-            const values = headers.map(header => {
-                const value = row[header] || '';
-                // Escape quotes and wrap in quotes if needed
-                if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
-                    return `"${value.replace(/"/g, '""')}"`;
-                }
-                return value;
-            });
-            csv += values.join(',') + '\n';
-        });
-        
-        // Set headers for file download
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="devices.csv"');
-        res.send(csv);
-    });
 });
 
 // Bulk import devices from CSV
